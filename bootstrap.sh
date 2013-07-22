@@ -68,9 +68,8 @@ install_extras
 message "Formatting and mounting extra ephemeral disks..."
 fetch_and_execute mount-script mount-script.sh
 
-#message "Fetching puppet modules for GCE..."
-#fetch_and_apply components
-#sudo puppet apply templates/gce_components.pp
+message "Fetching puppet modules for GCE..."
+fetch_and_apply components
 
 message "Fetching and applying node template..."
 fetch_and_apply node-template

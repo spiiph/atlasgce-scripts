@@ -1,4 +1,4 @@
-# Mounts for a gce worker node
+# Mounts and node template for a gce worker node
 
 # Cache for CVMFS
 mount {'/var/cache/cvmfs2':
@@ -28,4 +28,12 @@ mount {'/data/scratch ':
     ensure => mounted,
     dump => 1,
     pass => 2,
+}
+
+class { 'gce_node':
+  head => 'head.c.atlasgce.internal',
+  condor_role => 'node',
+  condor_slots_per_node => 1,
+  xrootd_global_redirector => 'glrd.usatlas.org',
+  require => Mount['/var/cache/cvmfs2', '/var/lib/condor', '/data/scratch'],
 }

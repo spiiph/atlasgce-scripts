@@ -1,11 +1,5 @@
-vcsrepo { '/etc/puppet/modules/cvmfs':
+vcsrepo { '/etc/puppet/modules/atlasgce':
   ensure   => present,
-  provider => svn,
-  source   => 'http://svn.cern.ch/guest/atustier3/puppet/modules/cvmfs/trunk',
+  provider => git,
+  source   => 'http://github.org/spiiph/atlasgce-modules',
 }
-
-#vcsrepo { '/etc/puppet/modules/xrootd':
-  #ensure   => present,
-  #provider => svn,
-  #source   => 'http://svn.cern.ch/guest/atustier3/puppet/modules/xrootd/trunk',
-#}
