@@ -18,9 +18,6 @@ install_puppet()
 
   message "Installing puppet..."
   yum -y install puppet-2.7.21
-
-  message "Installing puppetlabs-vcsrepo..."
-  puppet module install -f puppetlabs-vcsrepo
 }
 
 install_extras()
@@ -66,10 +63,10 @@ install_puppet
 install_extras
 
 message "Formatting and mounting extra ephemeral disks..."
-fetch_and_execute mount-script mount-script.sh
+fetch_and_execute mount-script mount.sh
 
 message "Fetching puppet modules for GCE..."
-fetch_and_apply components
+fetch_and_execute module-script modules.sh
 
 message "Fetching and applying node template..."
 fetch_and_apply node-template
