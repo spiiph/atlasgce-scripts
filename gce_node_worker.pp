@@ -21,7 +21,7 @@ mount {'/var/lib/condor':
 }
 
 # Cache for XRootD data cache
-mount {'/data/scratch ':
+mount {'/data/scratch':
     device => '/dev/vg00/lv_xrootd',
     fstype => 'ext4',
     options => 'defaults',
