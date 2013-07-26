@@ -34,7 +34,7 @@ class { 'gce_node':
   head => 'head.c.atlasgce.internal',
   role => 'node',
   condor_pool_password => 'gcecondor',
-  condor_slots_per_node => 1,
+  condor_slots => 4,
   xrootd_global_redirector => 'glrd.usatlas.org',
   require => Mount['/var/cache/cvmfs2', '/var/lib/condor', '/data/scratch'],
 }
