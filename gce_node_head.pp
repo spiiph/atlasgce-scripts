@@ -33,6 +33,7 @@ mount {'/var/cache/apfv2':
 class { 'gce_node':
   head => 'head.c.atlasgce.internal',
   role => 'head',
+  condor_pool_password => 'gcecondor',
   condor_slots_per_node => 1,
   xrootd_global_redirector => 'glrd.usatlas.org',
   require => Mount['/var/cache/cvmfs2', '/var/lib/condor', '/var/cache/apfv2'],
