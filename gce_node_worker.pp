@@ -33,8 +33,10 @@ mount {'/data/scratch':
 class { 'gce_node':
   head => 'head.c.atlasgce.internal',
   role => 'node',
-  condor_pool_password => 'gcecondor',
+  condor_pool_password => 'CHANGE ME',
   condor_slots => 4,
-  xrootd_global_redirector => 'glrd.usatlas.org',
+  #xrootd_global_redirector => 'glrd.usatlas.org',
+  xrootd_global_redirector => 'atlas-xrd-eos-n2n.cern.ch',
+  atlas_site => 'CERN-PROD',
   require => Mount['/var/cache/cvmfs2', '/var/lib/condor', '/data/scratch'],
 }

@@ -18,7 +18,7 @@ done
 echo "Creating volume group (vgcreate)..."
 vgcreate vg00 $DISK_PATH*
 
-format_and_mount lv_apf2 /var/cache/apfv2 "--size 100G"
+format_and_mount lv_apf2 /var/lib/apf "--size 100G"
 format_and_mount lv_condor /var/lib/condor "--size 120G"
 
 # NOTE: cvmfs on the head node is not strictly necessary, but useful for
