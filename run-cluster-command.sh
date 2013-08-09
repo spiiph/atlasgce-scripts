@@ -5,7 +5,8 @@ nodes=8
 
 run_command()
 {
-  gcutil ssh $1 "$2"
+  echo "Executing command on node $node..."
+  gcutil ssh $1 "$2" > /dev/null 2>&1
 }
 
 usage()
