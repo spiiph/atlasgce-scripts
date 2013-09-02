@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
-nodes=8
-
 usage()
 {
   echo "Usage: $(basename $0) [options]"
   echo "  -h            Print this text and exit"
-  echo "  -n N          Use N worker nodes. Default: 8."
+  echo "  -n N          Use N worker nodes. Default: $default_nodes."
+  echo "  -p PROJECT    Use GCE project PROJECT. Default: $default_project."
+  echo "  -z ZONE       Add instances to ZONE. Default: $default_zone."
 }
 
 error()
@@ -14,20 +14,32 @@ error()
   echo $1 > 2
 }
 
+cd $(dirname $0)
+. ./defaults.sh
+
 while [ $# -gt 0 ]; do
   case "$1" in
 
   # Standard help option.
-  -h|--help) usage; exit 0 ;;
+  -h|--help) usage; exit 0;;
 
-  # Number of nodes; default 8
+  # Number of nodes
   -n) shift; nodes=$1;;
 
-  -*) error "Unknown option $1"; usage ;;
-  *) break ;;
+  # GCE project
+  -p) shift; project=$1;;
+
+  # Zone
+  -z) shift; zone=$1;;
+
+  -*) error "Unknown option $1"; usage;;
+  *) break;;
 
   esac
   shift
 done
 
-gcutil deleteinstance --force head $(seq -s ' ' -f 'node%02.0f' $nodes)
+gcutil deleteinstance force head $(seq -s ' ' -f 'node%02.0f' $nodes) \
+  --force \
+  --project $project \
+  --zone $zone

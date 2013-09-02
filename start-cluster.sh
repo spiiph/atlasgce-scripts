@@ -1,16 +1,14 @@
 #!/usr/bin/env sh
 
-nodes=8
-zone=europe-west1-b
-machine=n1-standard-1-d
-
 usage()
 {
   echo "Usage: $(basename $0) [options]"
   echo "  -h            Print this text and exit"
-  echo "  -n N          Use N worker nodes. Default: 8."
-  echo "  -z ZONE       Add instances to ZONE. Default: europe-west1-b"
-  echo "  -m MACHINE    Add instances of type MACHINE. Default: n1-standard-1-d"
+  echo "  -n N          Use N worker nodes. Default: $default_nodes."
+  echo "  -p PROJECT    Use GCE project PROJECT. Default: $default_project."
+  echo "  -z ZONE       Add instances to ZONE. Default: $default_zone."
+  echo "  -m MACHINE    Add instances of type MACHINE. Default: $default_machine."
+  echo "  -i IMAGE      Add instances of image type IMAGE. Default: $default_image."
 }
 
 error()
@@ -18,37 +16,44 @@ error()
   echo $1 > 2
 }
 
+cd $(dirname $0)
+. ./defaults.sh
+
 while [ $# -gt 0 ]; do
   case "$1" in
 
   # Standard help option.
-  -h|--help) usage; exit 0 ;;
+  -h|--help) usage; exit 0;;
 
-  # Number of nodes; default 8
+  # Number of nodes
   -n) shift; nodes=$1;;
 
-  # Zone; default europe-west1-b
+  # GCE project
+  -p) shift; project=$1;;
+
+  # Zone
   -z) shift; zone=$1;;
 
-  # Machine; default n1-standard-1-d
+  # Machine type
   -m) shift; machine=$1;;
 
-  -*) error "Unknown option $1"; usage ;;
-  *) break ;;
+  # Image
+  -i) shift; image=$1;;
+
+  -*) error "Unknown option $1"; usage;;
+  *) break;;
 
   esac
   shift
 done
 
-cd $(dirname $0)
-
 echo "Creating head node"
 gcutil addinstance head \
-  --cache_flag_values \
-  --image projects/centos-cloud/global/images/centos-6-v20130522 \
-  --machine_type $machine \
+  --project $project \
   --zone $zone \
-  --persistent_boot_disk \
+  --machine_type $machine \
+  --image $image \
+  --nopersistent_boot_disk \
   --metadata_from_file=node-template:gce_node_head.pp \
   --metadata_from_file=module-script:modules.sh \
   --metadata_from_file=mount-script:mount-head.sh \
@@ -56,11 +61,11 @@ gcutil addinstance head \
 
 echo "Creating worker nodes"
 gcutil addinstance $(seq -s ' ' -f 'node%02.0f' $nodes) \
-  --cache_flag_values \
-  --image projects/centos-cloud/global/images/centos-6-v20130522 \
+  --project $project \
+  --image $image \
   --machine_type $machine \
   --zone $zone \
-  --persistent_boot_disk \
+  --nopersistent_boot_disk \
   --metadata_from_file=node-template:gce_node_worker.pp \
   --metadata_from_file=module-script:modules.sh \
   --metadata_from_file=mount-script:mount-worker.sh \
