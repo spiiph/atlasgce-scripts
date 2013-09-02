@@ -46,8 +46,9 @@ echo "Creating head node"
 gcutil addinstance head \
   --cache_flag_values \
   --image projects/centos-cloud/global/images/centos-6-v20130522 \
-  --machine_type n1-standard-1-d \
-  --zone europe-west1-b \
+  --machine_type $machine \
+  --zone $zone \
+  --persistent_boot_disk \
   --metadata_from_file=node-template:gce_node_head.pp \
   --metadata_from_file=module-script:modules.sh \
   --metadata_from_file=mount-script:mount-head.sh \
@@ -59,6 +60,7 @@ gcutil addinstance $(seq -s ' ' -f 'node%02.0f' $nodes) \
   --image projects/centos-cloud/global/images/centos-6-v20130522 \
   --machine_type $machine \
   --zone $zone \
+  --persistent_boot_disk \
   --metadata_from_file=node-template:gce_node_worker.pp \
   --metadata_from_file=module-script:modules.sh \
   --metadata_from_file=mount-script:mount-worker.sh \
