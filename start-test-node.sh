@@ -17,7 +17,7 @@ usage()
 
 error()
 {
-  echo $1 > 2
+  echo $1 >& 2
 }
 
 cd $(dirname $0)
@@ -47,6 +47,10 @@ while [ $# -gt 0 ]; do
   # Bare instance
   -b) bare=1;;
 
+  # CS instance
+  -c) cs=1;;
+
+
   -*) error "Unknown option $1"; usage;;
   *) break;;
 
@@ -54,22 +58,32 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ "x$bare" != "x" ]
+if [ "x$cs" != "x" ]
+then
+  echo "Creating Cloud Scheduler node $name"
+  gcutil addinstance $name \
+    --project $project \
+    --zone $zone \
+    --machine_type $machine \
+    --image $image \
+    --metadata_from_file=userdata:cloudscheduler/bootstrap.sh \
+    --nopersistent_boot_disk
+elif [ "x$bare" != "x" ]
 then
   echo "Creating bare node $name"
   gcutil addinstance $name \
     --project $project \
-    --image $image \
-    --machine_type $machine \
     --zone $zone \
+    --machine_type $machine \
+    --image $image \
     --nopersistent_boot_disk
 else
   echo "Creating test node $name"
   gcutil addinstance $name \
     --project $project \
-    --image $image \
-    --machine_type $machine \
     --zone $zone \
+    --machine_type $machine \
+    --image $image \
     --nopersistent_boot_disk \
     --metadata_from_file=mount-script:mount-worker.sh \
     --metadata_from_file=startup-script:bootstrap.sh
