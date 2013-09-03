@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# context       This shell script contextualized VM with nimbus
+#               style context data
+#
+# chkconfig:	- 20 01
+# description:  Contextualizes VM
+#
+
+
+CONTEXT_HELPER="/usr/local/libexec/contexthelper"
+
+RETVAL=0
+
+start() {
+	echo "Contextualizing VM..."
+	$CONTEXT_HELPER
+	RETVAL=$?
+}
+
+stop() {
+	echo "Nothing to do..."
+	RETVAL=0
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $RETVAL

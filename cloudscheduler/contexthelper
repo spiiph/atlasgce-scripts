@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+#
+# contexthelper - Fetch and run startup script stored in the userdata
+# metadata variable
+#
+
+USER_DATA_URL=http://metadata/computeMetadata/v1beta1/instance/attributes/userdata
+BOOTSTRAP_SCRIPT=/var/run/bootstrap.sh
+
+LOG_CMD="/usr/bin/logger -t startupscript -p daemon.info"
+
+log()
+{
+  echo "$1" | ${LOG_CMD}
+}
+
+error()
+{
+  echo "ERROR: $1" | ${LOG_CMD}
+  exit $2
+}
+
+fetch_and_execute()
+{
+  local url=$1
+  local script=$2
+
+  log "Fetching $url and storing it in $script..."
+  curl -f -s $url -o $script
+
+  if [ $? -eq 0 ]
+  then
+    echo "Executing $script..."
+    sh $script | $LOG_CMD
+    if [ $? -ne 0 ]
+    then
+      error "Execution of $script failed with exit code $?" 3
+    fi
+  else
+    error "Failed to fetch $url" 2
+  fi
+}
+
+fetch_and_execute $USER_DATA_URL $BOOTSTRAP_SCRIPT
+exit $?
