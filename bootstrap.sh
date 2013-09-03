@@ -7,7 +7,7 @@ message()
 
 error()
 {
-  echo "ERROR: $1" 1>&2
+  echo "ERROR: $1" >&2
   exit $2
 }
 
