@@ -27,6 +27,6 @@ class { 'gce_node':
   condor_use_gsi => true,
   condor_slots => 1,
   use_xrootd => false,
-  atlas_site => 'CERN-PROD',
+  atlas_site => undef,
   require => Mount['/var/cache/cvmfs2', '/var/lib/condor'],
 }

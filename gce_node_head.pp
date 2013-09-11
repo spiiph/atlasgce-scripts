@@ -33,9 +33,8 @@ mount {'/var/lib/apf':
 class { 'gce_node':
   head => 'head.c.atlasgce.internal',
   role => 'head',
-  condor_pool_password => 'CHANGE ME (Doesn\'t match gce_node_worker.pp)',
-  condor_slots => 4,
-  #xrootd_global_redirector => 'glrd.usatlas.org',
+  condor_pool_password => 'CHANGE ME TOO',
+  condor_slots => 1,
   xrootd_global_redirector => 'atlas-xrd-eos-n2n.cern.ch',
   atlas_site => 'CERN-PROD',
   panda_site => 'CERN-CLOUD',
