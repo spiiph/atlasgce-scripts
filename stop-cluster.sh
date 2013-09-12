@@ -39,7 +39,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-gcutil deleteinstance force head $(seq -s ' ' -f 'node%02.0f' $nodes) \
+gcutil deleteinstance head $(seq -s ' ' -f 'node%02.0f' $nodes) \
   --force \
   --project $project \
   --zone $zone
