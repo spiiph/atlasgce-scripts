@@ -38,7 +38,7 @@ class { 'gce_node':
   xrootd_global_redirector => 'atlas-xrd-eos-n2n.cern.ch',
   atlas_site => 'CERN-PROD',
   panda_site => 'CERN-CLOUD',
-  panda_queue => 'GOOGLE_COMPUTE_ENGINE',
+  panda_queue => 'ANALY_GOOGLE_COMPUTE_ENGINE',
   panda_cloud => 'CERN',
   panda_administrator_email => 'ohman@cern.ch',
   require => Mount['/var/cache/cvmfs2', '/var/lib/condor', '/var/lib/apf'],
