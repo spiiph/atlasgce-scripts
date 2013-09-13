@@ -13,6 +13,7 @@ usage()
   echo "  -i IMAGE      Add instances of image type IMAGE. Default: $default_image."
   echo "  -a NAME       Name the test instance NAME. Default: $default_name."
   echo "  -b            Bare instance without any contextualization."
+  echo "  -c            Instance with Cloud Scheduler contextualization."
 }
 
 error()
