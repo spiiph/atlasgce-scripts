@@ -205,7 +205,7 @@ and correspondingly to stop the cluster
 
 If something goes wrong with the contextualization, such that there's an error when applying the Puppet configuration, or one or more of the services are incorrectly configured, several options exist to debug the cluster.
 
-By *ssh*ing into the manager or one of the worker nodes, log files can be examined. The output from the bootstrap procedure, including the application of the Puppet configuration, can be found in `/var/log/startupscript.log`. Log files for the different services can be found in `/var/log/cvmfs`, `/var/log/xrootd`, `/var/log/condor`, and `/var/log/apf` for CernVM-FS, XRootD, Condor, and AutoPyFactory respectively. Note that to log enough information to debug the services it might be necessary to turn on debugging in the `gce_node_head.pp` and `gce_node_worker.pp` Puppet manifests.
+By _ssh_ing into the manager or one of the worker nodes, log files can be examined. The output from the bootstrap procedure, including the application of the Puppet configuration, can be found in `/var/log/startupscript.log`. Log files for the different services can be found in `/var/log/cvmfs`, `/var/log/xrootd`, `/var/log/condor`, and `/var/log/apf` for CernVM-FS, XRootD, Condor, and AutoPyFactory respectively. Note that to log enough information to debug the services it might be necessary to turn on debugging in the `gce_node_head.pp` and `gce_node_worker.pp` Puppet manifests.
 
 It is possible to use `run-cluster-command.sh -v` to sequentially collect information about each node in the cluster. For instance, to probe the CernVM-FS repositories on each node simply run
 
