@@ -15,7 +15,7 @@ run_command()
 
 usage()
 {
-  echo "Usage: $(basename $0) [options]"
+  echo "Usage: $(basename $0) [options] COMMAND"
   echo "  -h            Print this text and exit"
   echo "  -n N          Use N worker nodes. Default: $default_nodes."
   echo "  -p PROJECT    Use GCE project PROJECT. Default: $default_project."
@@ -24,7 +24,7 @@ usage()
 
 error()
 {
-  echo $1 > 2
+  echo $1 >& 2
 }
 
 cd $(dirname $0)
