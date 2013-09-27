@@ -21,7 +21,7 @@ See [What is Puppet?](https://puppetlabs.com/puppet/what-is-puppet/)
 
 ## Bootstrapping
 
-Bootstrapping is the process of launching software for machine self-configuring during startup. The bootstrapping procedure consists of the following steps
+Bootstrapping is the process of launching software for machine self-configuration during startup. The bootstrapping procedure consists of the following steps
 
 1. Install Puppet
 2. Install other required software (e.g. Git)
@@ -203,14 +203,14 @@ and correspondingly to stop the cluster
 
 ## Debugging
 
-If something goes wrong with the contextualization, such that there's an error when applying the Puppet configuration, or one or more of the services are incorrectly configured several options exist to debug the cluster.
+If something goes wrong with the contextualization, such that there's an error when applying the Puppet configuration, or one or more of the services are incorrectly configured, several options exist to debug the cluster.
 
-By `ssh`ing into the manager or one of the worker nodes, log files can be expected. The output from the bootstrap procedure, including the application of the Puppet configuration, can be found in `/var/log/startupscript.log`. Log files for the different services can be found in `/var/log/cvmfs`, `/var/log/xrootd`, `/var/log/condor`, and `/var/log/apf` for CernVM-FS, XRootD, Condor, and AutoPyFactory respectively. Note that to log enough information to debug the services it might be necessary to turn on debugging in the `gce_node_head.pp` and `gce_node_worker.pp` Puppet manifests.
+By *ssh*ing into the manager or one of the worker nodes, log files can be examined. The output from the bootstrap procedure, including the application of the Puppet configuration, can be found in `/var/log/startupscript.log`. Log files for the different services can be found in `/var/log/cvmfs`, `/var/log/xrootd`, `/var/log/condor`, and `/var/log/apf` for CernVM-FS, XRootD, Condor, and AutoPyFactory respectively. Note that to log enough information to debug the services it might be necessary to turn on debugging in the `gce_node_head.pp` and `gce_node_worker.pp` Puppet manifests.
 
 It is possible to use `run-cluster-command.sh -v` to sequentially collect information about each node in the cluster. For instance, to probe the CernVM-FS repositories on each node simply run
 
 ```run-cluster-command.sh -v 'cvmfs_config probe'```
 
-and to find the phrase `all.manager head.example.com 1213` in the Cluster Management Services log file just do
+and to find the phrase `all.manager` in the Cluster Management Services log file just do
 
-```run-cluster-command.sh -v 'grep -F "all.manager head.example.com 1213" /var/log/xrootd/cmsd.log'```
+```run-cluster-command.sh -v 'grep -F "all.manager" /var/log/xrootd/cmsd.log'```
