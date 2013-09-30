@@ -1,45 +1,56 @@
-#!/usr/bin/env sh
+#!/usr/bin/python
+# vim: set expandtab ts=4 sw=4:
 #
-# contexthelper - Fetch and run startup script stored in the userdata
-# metadata variable
+# contexthelper - writes nimbus context data to disk from ec2 user-data
 #
+# An example:
+#
+#<OptionalParameters>
+#    <filewrite>
+#        <content>These are the contents</content>
+#        <pathOnVM>/tmp/custom</pathOnVM>
+#        <executable>False</executable>
+#    </filewrite>
+#    <filewrite>
+#        <content>These are the contents</content>
+#        <pathOnVM>/tmp/custom0</pathOnVM>
+#        <executable>True</executable>
+#    </filewrite>
+#</OptionalParameters>
 
-USER_DATA_URL=http://metadata/computeMetadata/v1beta1/instance/attributes/userdata
-BOOTSTRAP_SCRIPT=/var/run/bootstrap.sh
+import os
+import sys
+import stat
+from xml.dom import minidom
+import urllib2
 
-LOG_CMD="/usr/bin/logger -t startupscript -p daemon.info"
+USER_DATA_URL = "http://metadata/computeMetadata/v1beta1/instance/attributes/user-data"
 
-log()
-{
-  echo "$1" | ${LOG_CMD}
-}
+try:
+    user_data_xml = urllib2.urlopen(USER_DATA_URL).read()
+except:
+    print >>sys.stderr, "Couldn't read userdata! - may be no metadata server."
+    sys.exit(0)
 
-error()
-{
-  echo "ERROR: $1" | ${LOG_CMD}
-  exit $2
-}
+user_data = minidom.parseString(user_data_xml)
 
-fetch_and_execute()
-{
-  local url=$1
-  local script=$2
+for file_tag in user_data.getElementsByTagName("filewrite"):
+    path = file_tag.getElementsByTagName("pathOnVM")[0].firstChild.nodeValue
+    content = file_tag.getElementsByTagName("content")[0].firstChild.nodeValue
+    executable = file_tag.getElementsByTagName("executable")[0].firstChild.nodeValue
 
-  log "Fetching $url and storing it in $script..."
-  curl -f -s $url -o $script
+    try:
+        f = open(path, "w")
+        f.write(content)
+        f.close()
+        if executable.lower() == 'true':
+            # update script permission
+            st = os.stat(path)
+            os.chmod(path, st.st_mode | stat.S_IEXEC)
+            # execute the script
+            os.system(path)
+    except:
+        print >>sys.stderr, "Couldn't write file %s" % path
+        sys.exit(1)
 
-  if [ $? -eq 0 ]
-  then
-    echo "Executing $script..."
-    sh $script | $LOG_CMD
-    if [ $? -ne 0 ]
-    then
-      error "Execution of $script failed with exit code $?" 3
-    fi
-  else
-    error "Failed to fetch $url" 2
-  fi
-}
-
-fetch_and_execute $USER_DATA_URL $BOOTSTRAP_SCRIPT
-exit $?
+sys.exit(0)

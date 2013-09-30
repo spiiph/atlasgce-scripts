@@ -6,6 +6,6 @@ then
   exit 1
 fi
 
-install -v -o root -g root -m 0755 rc.local /etc/rc.d
-# Patched run-startup-script to allow running of google.cloudinit.user_data
-install -v -o root -g root -m 0755 run-startup-scripts /usr/share/google
+install -v -o root -g root -m 755 context /etc/init.d
+install -v -o root -g root -m 755 contexthelper /usr/local/bin
+chkconfig context on

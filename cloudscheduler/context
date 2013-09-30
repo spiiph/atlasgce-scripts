@@ -8,30 +8,35 @@
 #
 
 
-CONTEXT_HELPER="/usr/local/libexec/contexthelper"
+CONTEXT_HELPER="contexthelper"
+
+# source function library
+. /etc/rc.d/init.d/functions
 
 RETVAL=0
 
 start() {
-	echo "Contextualizing VM..."
+	echo -n $"Contextualizing VM...: "
 	$CONTEXT_HELPER
 	RETVAL=$?
+	echo
 }
 
 stop() {
-	echo "Nothing to do..."
+	echo -n $"Done contextualizing VM...: "
 	RETVAL=0
+	echo
 }
 
 case "$1" in
   start)
 	start
 	;;
-  stop)
+  stop) 
 	stop
 	;;
   *)
-	echo "Usage: $0 {start|stop}"
+	echo $"Usage: $0 {start|stop}"
 	exit 1
 esac
 
