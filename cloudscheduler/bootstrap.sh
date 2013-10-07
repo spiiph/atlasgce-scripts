@@ -82,6 +82,9 @@ install_puppet()
 
   message "Installing puppet..."
   yum -y install puppet-2.7.21
+
+  message "Installing puppet modules..."
+  puppet module install thias/sysctl
 }
 
 install_extras()
