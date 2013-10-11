@@ -52,7 +52,7 @@ while [ $# -gt 0 ]; do
   -c) cs=1;;
 
 
-  -*) error "Unknown option $1"; usage;;
+  -*) error "Unknown option $1"; usage; exit 1;;
   *) break;;
 
   esac
@@ -67,7 +67,7 @@ then
     --zone $zone \
     --machine_type $machine \
     --image $image \
-    --metadata_from_file=userdata:cloudscheduler/bootstrap.sh \
+    --metadata_from_file=user-data:cloudscheduler/nimbus_context.xml \
     --nopersistent_boot_disk
 elif [ "x$bare" != "x" ]
 then
