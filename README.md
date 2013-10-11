@@ -31,7 +31,7 @@ Bootstrapping is the process of launching software for machine self-configuratio
 
 For the manager and worker role the bootstrapping procedure is run by the `bootstrap.sh` shell script, which is provided to the machine as a [startup script](https://developers.google.com/compute/docs/howtos/startupscript). It is stored locally as `/var/run/google.startup.script`.
 
-For the Cloud Scheduler worker node `cloudscheduler/bootstrap.sh` is used for bootstrapping, and it is provided to the machine in the `userdata` metadata attribute. It is stored locally as `/var/run/google.cloudinit.user_data`. _Note: The bootstrapping procedure for Cloud Scheduler worker nodes requires machine images prepared with `cloudscheduler/setup.sh`._
+For the Cloud Scheduler worker node `cloudscheduler/bootstrap.sh` is used for bootstrapping, and it is provided to the machine through the `user-data` metadata attribute and the `context` and `contexthelper` scripts. _Note: The bootstrapping procedure for Cloud Scheduler worker nodes requires machine images prepared with `cloudscheduler/setup.sh`._
 
 ## Contextualization elements
 
@@ -61,21 +61,21 @@ The worker role is contextualized with the following files
 
 ### The Cloud Scheduler worker role (`csnode`)
 
-The Cloud Scheduler worker role requires a machine image prepared with the following files (see [Image creation for Cloud Scheduler](https://github.com/spiiph/atlasgce-scripts/tree/master/cloudscheduler))
+The Cloud Scheduler worker role requires a machine image prepared with the following files (see [cloudscheduler](https://github.com/spiiph/atlasgce-scripts/tree/master/cloudscheduler))
 
 <table>
   <tr><td><strong>File</strong></td><td><strong>Description</strong></td></tr>
-  <tr><td><code>/etc/rc.d/rc.local</code></td><td>Modified to download the contents of the <code>userdata</code> metadata attribute</td></tr>
-  <tr><td><code>/usr/share/google/run-startup-scripts</code></td><td>Modified to fix a bug where <code>/var/run/google.cloudinit.user_data</code> was not run</td></tr>
+  <tr><td><code>/etc/init.d/context</code></td><td>Run during boot to execute the <code>context-helper</code> script</td></tr>
+  <tr><td><code>/usr/local/bin/context-helper</code></td><td>Script that downloads [Nimbus](http://www.nimbusproject.org/) context data from the <code>user-data</code> metadata attribute</td></tr>
 </table>
 
 and is contextualized with these files
 
 <table>
-  <tr><td><strong>Local file</strong></td><td><strong>Remote file</strong></td><td><strong>Description</strong></td></tr>
-  <tr><td><code>cloudscheduler/bootstrap.sh</code></td><td><code>/var/run/google.cloudinit.user_data</code></td><td>Script that runs the bootstrapping procedure</td></tr>
-  <tr><td></td><td><code>/var/run/mount.sh</code></td><td>Script that configures and mounts extra disk space</td></tr>
-  <tr><td></td><td><code>/var/run/node-template.pp</code></td><td>Puppet manifest containing the machine configuration</td></tr>
+  <tr><td><strong>Local file</strong></td><td><strong>Description</strong></td></tr>
+  <tr><td><code>cloudscheduler/bootstrap.sh</code></td><td>Script that runs the bootstrapping procedure</td></tr>
+  <tr><td><em>embedded mount script</em></td><td>Script that configures and mounts extra disk space</td></tr>
+  <tr><td><em>embedded node template</em></td><td>Puppet manifest containing the machine configuration</td></tr>
 </table>
 
 
@@ -152,7 +152,7 @@ Usage: start-test-node.sh [options]
 
 The `start-test-node.sh` script is a helper script to start a worker node suitable for testing the contextualization procedure. Without any options this command will create a worker node that has gone through parts of the bootstrapping procedure, but the Puppet contextualization has not taken place. It executes `bootstrap.sh` and `mount-worker.sh` on the node.
 
-With the `-c` option a node is created as if it had been started by Cloud Scheduler. It sends `cloudscheduler/bootstrap.sh` in the `userdata` metadata attribute, which with an image prepared for Cloud Scheduler performs bootstrapping and Puppet contextualization.
+With the `-c` option a node is created as if it had been started by Cloud Scheduler. It sends `cloudscheduler/bootstrap.sh` in the `user-data` metadata attribute, which with a machine image prepared for Cloud Scheduler performs bootstrapping and Puppet contextualization.
 
 With the `-b` option a bare node suitable for manually testing contextualization. By uploading bootstrapping scripts and Puppet modules and templates, the whole contextualization procedure can be mimicked.
 
