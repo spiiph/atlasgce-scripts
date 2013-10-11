@@ -1,3 +1,6 @@
+<OptionalParameters>
+    <filewrite>
+        <content>
 #!/usr/bin/env sh
 
 message()
@@ -7,14 +10,14 @@ message()
 
 error()
 {
-  echo "ERROR: $1" 1>&2
+  echo "ERROR: $1" 1&gt;&amp;2
   exit $2
 }
 
 mount_script=/var/run/mount.sh
 node_template=/var/run/node-template.pp
 
-cat << "__EOF__" > $mount_script
+cat &lt;&lt; "__EOF__" &gt; $mount_script
 #!/usr/bin/env sh
 
 format_and_mount()
@@ -41,37 +44,37 @@ __EOF__
 
 
 
-cat << "__EOF__" > $node_template
+cat &lt;&lt; "__EOF__" &gt; $node_template
 # Mounts and node template for a gce worker node
 
 # Cache for CVMFS
 mount {'/var/cache/cvmfs2':
-    device => '/dev/vg00/lv_cvmfs',
-    fstype => 'ext4',
-    options => 'defaults',
-    ensure => mounted,
-    dump => 1,
-    pass => 2,
+    device =&gt; '/dev/vg00/lv_cvmfs',
+    fstype =&gt; 'ext4',
+    options =&gt; 'defaults',
+    ensure =&gt; mounted,
+    dump =&gt; 1,
+    pass =&gt; 2,
 }
 
 # Cache for scheduler
 mount {'/var/lib/condor':
-    device => '/dev/vg00/lv_condor',
-    fstype => 'ext4',
-    options => 'defaults',
-    ensure => mounted,
-    dump => 1,
-    pass => 2,
+    device =&gt; '/dev/vg00/lv_condor',
+    fstype =&gt; 'ext4',
+    options =&gt; 'defaults',
+    ensure =&gt; mounted,
+    dump =&gt; 1,
+    pass =&gt; 2,
 }
 
 class { 'gce_node':
-  head => 'to.be.contextualized.by.cloud.scheduler',
-  role => 'csnode',
-  condor_pool_password => undef,
-  condor_use_gsi => true,
-  condor_slots => 1,
-  use_xrootd => false,
-  require => Mount['/var/cache/cvmfs2', '/var/lib/condor'],
+  head =&gt; 'to.be.contextualized.by.cloud.scheduler',
+  role =&gt; 'csnode',
+  condor_pool_password =&gt; undef,
+  condor_use_gsi =&gt; true,
+  condor_slots =&gt; 1,
+  use_xrootd =&gt; false,
+  require =&gt; Mount['/var/cache/cvmfs2', '/var/lib/condor'],
 }
 __EOF__
 
@@ -116,3 +119,8 @@ install_puppet_modules
 
 message "Fetching and applying node template..."
 puppet apply $node_template
+        </content>
+        <pathOnVM>/var/run/bootstrap.sh</pathOnVM>
+        <executable>True</executable>
+    </filewrite>
+</OptionalParameters>
